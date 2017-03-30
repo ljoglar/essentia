@@ -393,6 +393,7 @@ PyObject* PyPool::merge(PyPool* self, PyObject* pyArgs) {
       case VECTOR_VECTOR_REAL: MERGE_COPY(VectorVectorReal, vector<vector<Real> >);
       case VECTOR_VECTOR_STRING: MERGE_COPY(VectorVectorString, vector<vector<string> >);
       case VECTOR_MATRIX_REAL:   MERGE_COPY(VectorMatrixReal, vector<TNT::Array2D<Real> >);
+      case VECTOR_VECTOR_COMPLEX:    MERGE_COPY(VectorVectorComplex, vector<vector<vector<complex<Real> > > >);
       //case POOL: p.merge(args[1].cppPool, mergeType)
 
 

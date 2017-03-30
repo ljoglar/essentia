@@ -108,6 +108,10 @@ class Pool {
   PoolOf(TNT::Array2D<Real>) _poolArray2DReal;
   PoolOf(StereoSample) _poolStereoSample;
 
+  // maps for vectors of vectors values:
+  PoolOf(std::vector<std::vector<std::complex<Real> > >) _poolVectorVectorComplex;
+
+
   // WARNING: this function assumes that all sub-pools are locked
   std::vector<std::string> descriptorNamesNoLocking() const;
 
@@ -122,7 +126,8 @@ class Pool {
 
   mutable Mutex mutexReal, mutexVectorReal, mutexString, mutexVectorString,
                 mutexArray2DReal, mutexStereoSample,
-                mutexSingleReal, mutexSingleString, mutexSingleVectorReal;
+                mutexSingleReal, mutexSingleString, mutexSingleVectorReal,
+                mutexVectorVectorComplex;
 
   /**
    * Adds @e value to the Pool under @e name
@@ -162,6 +167,9 @@ class Pool {
 
   /** @copydoc add(const std::string&,const Real&,bool) */
   void add(const std::string& name, const StereoSample& value, bool validityCheck = false);
+
+  /** @copydoc add(const std::string&,const Real&,bool) */
+  void add(const std::string& name, const std::vector<std::vector<std::complex<Real> > >& value, bool validityCheck = false);
 
   /**
    * WARNING: this is an utility method that might fail in weird ways if not used
@@ -240,6 +248,9 @@ class Pool {
 
   /** @copydoc merge(const std::string&, const std::vector<Real>&, const std::string&)*/
   void merge(const std::string& name, const std::vector<StereoSample>& value, const std::string& type="");
+
+  /** @copydoc merge(const std::string&, const std::vector<Real>&, const std::string&)*/
+  void merge(const std::string& name, const std::vector< std::vector<std::vector<std::complex<Real> > > >& value, const std::string& type="");
 
   /** @copydoc merge(const std::string&, const std::vector<Real>&, const std::string&)*/
   void mergeSingle(const std::string& name, const Real& value, const std::string& type="");
@@ -346,6 +357,12 @@ class Pool {
   const std::map<std::string, std::vector<Real> >& getSingleVectorRealPool() const { return _poolSingleVectorReal; }
 
   /**
+   * @returns a vector containing all descriptor names in the Pool which
+   * belong to the specified namespace @e ns
+   */
+  const PoolOf(std::vector<std::vector<std::complex<Real> > > )& getVectorVectorComplexPool() const { return _poolVectorVectorComplex; }
+
+  /**
    * Checks that no descriptor name is in two different inner pool types at
    * the same time, and throws an EssentiaException if there is
    */
@@ -389,6 +406,7 @@ SPECIALIZE_VALUE(std::vector<std::vector<Real> >, VectorReal);
 SPECIALIZE_VALUE(std::vector<std::vector<std::string> >, VectorString);
 SPECIALIZE_VALUE(std::vector<TNT::Array2D<Real> >, Array2DReal);
 SPECIALIZE_VALUE(std::vector<StereoSample>, StereoSample);
+SPECIALIZE_VALUE(std::vector<std::vector<std::vector<std::complex<Real> > > >, VectorVectorComplex);
 
 // This value function is not under the macro above because it needs to check
 // in two separate sub-pools (poolReal and poolSingleVectorReal)
@@ -437,6 +455,7 @@ SPECIALIZE_CONTAINS(std::vector<std::vector<Real> >, VectorReal);
 SPECIALIZE_CONTAINS(std::vector<std::vector<std::string> >, VectorString);
 SPECIALIZE_CONTAINS(std::vector<TNT::Array2D<Real> >, Array2DReal);
 SPECIALIZE_CONTAINS(std::vector<StereoSample>, StereoSample);
+SPECIALIZE_CONTAINS(std::vector<std::vector<std::vector<std::complex<Real> > > >, VectorVectorComplex);
 
 // This value function is not under the macro above because it needs to check
 // in two separate sub-pools (poolReal and poolSingleVectorReal)
@@ -474,7 +493,8 @@ MutexLocker lockArray2DReal(mutexArray2DReal);              \
 MutexLocker lockStereoSample(mutexStereoSample);            \
 MutexLocker lockSingleReal(mutexSingleReal);                \
 MutexLocker lockSingleString(mutexSingleString);            \
-MutexLocker lockSingleVectorReal(mutexSingleVectorReal);
+MutexLocker lockSingleVectorReal(mutexSingleVectorReal);    \
+MutexLocker lockVectorVectorComplex(mutexVectorVectorComplex);
 
 
 

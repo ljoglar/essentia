@@ -135,6 +135,16 @@ class PoolStorage : public PoolStorageBase {
     }
   }
 
+  void addToPool(const std::vector<std::vector<std::complex<Real> > >& value) {
+    if (_setSingle) {
+      throw EssentiaException("PoolStorage::addToPool, setting VectorVectorComplex as single value"
+                              " is not supported by Pool.");
+    }
+    else {
+      _pool->add(_descriptorName, value);
+    }
+  }
+
 };
 
 

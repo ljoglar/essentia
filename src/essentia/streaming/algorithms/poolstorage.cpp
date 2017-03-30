@@ -41,6 +41,7 @@ void connect(SourceBase& source, Pool& pool, const string& descriptorName, bool 
   CREATE_POOL_STORAGE(TNT::Array2D<Real>);
   CREATE_POOL_STORAGE(StereoSample);
   CREATE_POOL_STORAGE(vector<Real>);
+  CREATE_POOL_STORAGE(vector<vector<std::complex<Real> > >);
 
   // convert int to Real
   if (sameType(sourceType, typeid(int))) ps = new PoolStorage<int, Real>(&pool, descriptorName, setSingle);

@@ -39,6 +39,7 @@ void Pool::clear() {
   _poolSingleReal.clear();
   _poolSingleString.clear();
   _poolSingleVectorReal.clear();
+  _poolVectorVectorComplex.clear();
 }
 
 void Pool::checkIntegrity() const {
@@ -86,6 +87,8 @@ void Pool::remove(const string& name) {
   SEARCH_AND_DESTROY(vector<TNT::Array2D<Real> >, Array2DReal);
   SEARCH_AND_DESTROY(vector<StereoSample>, StereoSample);
 
+  SEARCH_AND_DESTROY(vector<vector<vector<complex<Real> > > >, VectorVectorComplex);
+
   #undef SEARCH_AND_DESTROY
 }
 
@@ -126,6 +129,8 @@ void Pool::removeNamespace(const string& ns) {
   SEARCH_AND_DESTROY(vector<TNT::Array2D<Real> >, Array2DReal);
   SEARCH_AND_DESTROY(vector<StereoSample>, StereoSample);
 
+  SEARCH_AND_DESTROY(vector<vector<vector<complex<Real> > > >, VectorVectorComplex);
+
   #undef SEARCH_AND_DESTROY
 }
 
@@ -154,6 +159,7 @@ vector<string> Pool::descriptorNames() const {
   ADD_DESC_NAMES(vector<vector<string> >, VectorString);
   ADD_DESC_NAMES(vector<TNT::Array2D<Real> >, Array2DReal);
   ADD_DESC_NAMES(vector<StereoSample>, StereoSample);
+  ADD_DESC_NAMES(vector<vector<vector<complex<Real> > > >, VectorVectorComplex);
 
   #undef ADD_DESC_NAMES
 
@@ -182,7 +188,7 @@ vector<string> Pool::descriptorNames(const std::string& ns) const {
   ADD_DESC_NAMES(vector<vector<string> >, VectorString);
   ADD_DESC_NAMES(vector<TNT::Array2D<Real> >, Array2DReal);
   ADD_DESC_NAMES(vector<StereoSample>, StereoSample);
-
+  ADD_DESC_NAMES(vector<vector<vector<complex<Real> > > >, VectorVectorComplex);
   #undef ADD_DESC_NAMES
 
   return descNames;
@@ -191,15 +197,16 @@ vector<string> Pool::descriptorNames(const std::string& ns) const {
 
 // WARNING: this function assumes that a GLOBAL_LOCK is already obtained
 vector<string> Pool::descriptorNamesNoLocking() const {
-  vector<string> descNames(_poolReal.size()         +
-                           _poolVectorReal.size()   +
-                           _poolString.size()       +
-                           _poolVectorString.size() +
-                           _poolArray2DReal.size()  +
-                           _poolStereoSample.size() +
-                           _poolSingleReal.size()   +
-                           _poolSingleString.size() +
-                           _poolSingleVectorReal.size());
+  vector<string> descNames(_poolReal.size()             +
+                           _poolVectorReal.size()       +
+                           _poolString.size()           +
+                           _poolVectorString.size()     +
+                           _poolArray2DReal.size()      +
+                           _poolStereoSample.size()     +
+                           _poolSingleReal.size()       +
+                           _poolSingleString.size()     +
+                           _poolSingleVectorReal.size() +
+                           _poolVectorVectorComplex.size());
   int i=0;
 
   #define ADD_DESC_NAMES(type, tname)                                          \
@@ -218,6 +225,7 @@ vector<string> Pool::descriptorNamesNoLocking() const {
   ADD_DESC_NAMES(vector<vector<string> >, VectorString);
   ADD_DESC_NAMES(vector<TNT::Array2D<Real> >, Array2DReal);
   ADD_DESC_NAMES(vector<StereoSample>, StereoSample);
+  ADD_DESC_NAMES(vector<vector<vector<complex<Real> > > >, VectorVectorComplex);
 
   #undef ADD_DESC_NAMES
 
@@ -369,6 +377,7 @@ void Pool::merge(Pool& p, const string& mergeType) {
   MERGE_POOL(vector<string>, VectorString);
   MERGE_POOL(StereoSample, StereoSample);
   MERGE_POOL(TNT::Array2D<Real>, Array2DReal);
+  MERGE_POOL(vector<vector<complex<Real> > > , VectorVectorComplex);
 
   #undef MERGE_SINGLE_POOL
   #undef MERGE_POOL
