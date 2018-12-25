@@ -253,6 +253,9 @@ int essentia_main(string audioFilename, string outputFilename) {
     pool.set("startStopCut.start", startStopCutStart);
     pool.set("startStopCut.end", startStopCutEnd);
 
+
+    cout << "-------- start Hum ---------" << endl;
+
     humDetector->compute();
     if (humFrequencies.size() > 0) {
       pool.set("humDetector.present", true);
@@ -264,8 +267,11 @@ int essentia_main(string audioFilename, string outputFilename) {
       pool.set("humDetector.present", false);
     }
 
+    cout << "-------- end  Hum ---------" << endl;
+
+    
     truePeakDetector->compute();
-    for (uint i = 0; i < peakLocations.size(); i++) 
+    for (uint i = 0; i < peakLocations.size(); i++)
       peakLocations[i] /= sr;
 
     if (peakLocations.size() > 0) {
