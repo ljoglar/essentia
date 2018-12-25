@@ -197,6 +197,7 @@ AlgorithmStatus HumDetector::process() {
     return FINISHED;
   }
 
+  cout << "continue 01" << endl;
   const vector<vector<Real> >& psd = _pool.value<vector<vector<Real> > >("psd");
 
 
@@ -204,7 +205,7 @@ AlgorithmStatus HumDetector::process() {
   _spectSize = psd[0].size();
 
   if (_timeStamps < 10) {
-     E_INFO("HumDetector: With only " << _timeStamps << 
+     E_INFO("HumDetector: With only " << _timeStamps <<
             " PSD frames it is not posible to estimate humming frequencies."
             " Try to process a longer audio stream or to reduce the hopSize parameter");
 
@@ -217,17 +218,18 @@ AlgorithmStatus HumDetector::process() {
     return FINISHED;
   }
 
+  cout << "continue 02" << endl;
 
   // this algorithm relies in a long audio window (10s by default). In order to prevent it to break,
   // the analysis window duration shrinks down when the input audio stream is shorter.
   if (_timeWindow > _timeStamps) {
-    E_INFO("HumDetector: the selected time window needs " << _timeWindow * _hopSize / _outSampleRate << 
-    "s of audio while the input stream lasts " << _timeStamps * _hopSize / _outSampleRate << 
+    E_INFO("HumDetector: the selected time window needs " << _timeWindow * _hopSize / _outSampleRate <<
+    "s of audio while the input stream lasts " << _timeStamps * _hopSize / _outSampleRate <<
     "s.  Resizing the analysis time window to " << _timeStamps * _hopSize / (2 * _outSampleRate) << "s");
     _timeWindow = _timeStamps/2;
   }
 
-  // the algorithms works by sorting (energy-wise) the PSD of the analysis window and computing the 
+  // the algorithms works by sorting (energy-wise) the PSD of the analysis window and computing the
   // ratio between the Q0 and Q1 quantiles (0.1 and 0.55 by default).
   _Q0sample = (uint)(_Q0 * _timeWindow + 0.5);
   _Q1sample = (uint)(_Q1 * _timeWindow + 0.5);
@@ -238,6 +240,7 @@ AlgorithmStatus HumDetector::process() {
   vector<size_t> psdIdxs(_timeWindow, 0);
   Real Q0, Q1;
 
+  cout << "continue 03" << endl;
   // initialize the PSD and r (quantile ratios) matrices.
   for (uint i = 0; i < _spectSize; i++) {
     for (uint j = 0; j < _timeWindow; j++)
@@ -246,10 +249,11 @@ AlgorithmStatus HumDetector::process() {
     psdIdxs = sort_indexes(psdWindow[i]);
     Q0 = psdWindow[i][psdIdxs[_Q0sample]];
     Q1 = psdWindow[i][psdIdxs[_Q1sample]];
-    
+
     r[i][0] = Q0 / Q1;
   }
 
+  cout << "continue 04" << endl;
   // iterate during the rest of timestamps.
   for (uint i = 0; i < _spectSize; i++) {
     for (uint j = _timeWindow; j < _timeStamps; j++) {
@@ -264,27 +268,30 @@ AlgorithmStatus HumDetector::process() {
       }
   }
 
+  cout << "continue 05" << endl;
   // apply the median filter frequency-wise
   vector<Real> rSpec = vector<Real>(_spectSize, 0.f);
   vector<Real> filtered = vector<Real>(_spectSize, 0.f);
-  _Smoothing->configure("kernelSize", _medianFilterSize); 
+  _Smoothing->configure("kernelSize", _medianFilterSize);
   _Smoothing->output("filteredArray").set(filtered);
   _Smoothing->input("array").set(rSpec);
   for (uint j = 0; j < _iterations; j++) {
     for (uint i = 0; i < _spectSize; i++)
       rSpec[i] = r[i][j];
     _Smoothing->compute();
-    
+
     for (uint i = 0; i < _spectSize; i++)
       r[i][j] -= filtered[i];
   }
 
+  cout << "continue 06" << endl;
   // apply the median filter time-wise
   uint kernerSize = min((uint)(_timeWindow / 2), _iterations);
   kernerSize -= (kernerSize + 1) % 2;
   _Smoothing->configure("kernelSize", kernerSize);
   _Smoothing->output("filteredArray").set(filtered);
 
+  cout << "continue 07" << endl;
   for (uint i = 0; i < _spectSize; i++) {
     _Smoothing->input("array").set(r[i]);
     _Smoothing->compute();
@@ -295,7 +302,7 @@ AlgorithmStatus HumDetector::process() {
 
   _rMatrix.push(vecvecToArray2D(r));
 
-  
+
   vector<Real> frequencies, magnitudes;
   vector<Real> salienceFunction;
   vector<Real> salienceBins, salienceValues;
@@ -304,9 +311,10 @@ AlgorithmStatus HumDetector::process() {
   bool peakBinsNotEmpty = false;
   Real threshold;
 
+  cout << "continue 08" << endl;
   // finally the r matrix is feed into the pitch contours recommended signal chain
   for (uint j = 0; j < _iterations; j++) {
-    for (uint i = 0; i < _spectSize; i++) 
+    for (uint i = 0; i < _spectSize; i++)
       rSpec[i] = r[i][j];
 
     threshold = _detectionThreshold * stddev(rSpec, mean(rSpec));
@@ -356,6 +364,7 @@ AlgorithmStatus HumDetector::process() {
       contoursSaliencesMean.assign(contoursBins.size(), 0.f);
       contoursEndsTimes.assign(contoursBins.size(), 0.f);
 
+  cout << "continue 09" << endl;
       Real timeWindowSecs = _timeWindow * _hopSize / _outSampleRate;
       for (uint i = 0; i < contoursBins.size(); i++) {
         // we add the offset due to the initial frames needed to fill the buffers
