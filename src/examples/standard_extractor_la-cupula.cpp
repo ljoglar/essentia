@@ -246,10 +246,13 @@ int essentia_main(string audioFilename, string outputFilename) {
     falseStereoDetector->compute();
     pool.set("channelsCorrelation", correlation);
     cout << "-------- end false Stereo ---------" << endl;
+    cout << "-------- start monoMixer ---------" << endl;
 
     monoMixer->compute();
+    cout << "-------- end monoMixer ---------" << endl;
 
     startStopCut->compute();
+    cout << "-------- end startStopCut compute ---------" << endl;
     pool.set("startStopCut.start", startStopCutStart);
     pool.set("startStopCut.end", startStopCutEnd);
 
@@ -269,7 +272,7 @@ int essentia_main(string audioFilename, string outputFilename) {
 
     cout << "-------- end  Hum ---------" << endl;
 
-    
+
     truePeakDetector->compute();
     for (uint i = 0; i < peakLocations.size(); i++)
       peakLocations[i] /= sr;
