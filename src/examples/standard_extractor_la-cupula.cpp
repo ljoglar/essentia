@@ -260,6 +260,10 @@ int essentia_main(string audioFilename, string outputFilename) {
     cout << "-------- start Hum ---------" << endl;
 
     humDetector->compute();
+    cout << "-------- end Hum compute---------" << endl;
+
+    cout << humFrequencies.size() << endl;
+
     if (humFrequencies.size() > 0) {
       pool.set("humDetector.present", true);
       pool.set("humDetector.frequencies", humFrequencies);

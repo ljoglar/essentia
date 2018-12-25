@@ -182,6 +182,8 @@ void HumDetector::configure() {
 
 
 AlgorithmStatus HumDetector::process() {
+  cout << "Should Stop: " << shouldStop() << endl;
+
   if (!shouldStop()) return PASS;
 
   if (!_pool.contains<vector<vector<Real> > >("psd")) {
@@ -437,6 +439,10 @@ void HumDetector::createInnerNetwork() {
 }
 
 void HumDetector::compute() {
+
+  cout << "compute" << endl;
+
+
   const vector<Real>& signal = _signal.get();
   if (!signal.size()) {
     throw EssentiaException("HumDetector: empty input signal");
