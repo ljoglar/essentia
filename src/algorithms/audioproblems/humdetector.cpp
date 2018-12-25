@@ -182,9 +182,12 @@ void HumDetector::configure() {
 
 
 AlgorithmStatus HumDetector::process() {
-  cout << "Should Stop: " << shouldStop() << endl;
+//  cout << "Should Stop: " << shouldStop() << endl;
 
-  if (!shouldStop()) return PASS;
+  if (!shouldStop()) {
+    E_WARNING("HumDetector: shouldStop");
+    return PASS;
+  }
 
   if (!_pool.contains<vector<vector<Real> > >("psd")) {
     // do not push anything in the case of empty signal
@@ -448,15 +451,19 @@ void HumDetector::compute() {
     throw EssentiaException("HumDetector: empty input signal");
   }
 
+  cout << "compute02" << endl;
+
   _vectorInput->setVector(&signal);
   _network->run();
 
+  cout << "compute03" << endl;
   TNT::Array2D<Real>& rMatrix = _rMatrix.get();
   vector<Real>& frequencies = _frequencies.get();
   vector<Real>& amplitudes = _saliences.get();
   vector<Real>& starts = _starts.get();
   vector<Real>& ends = _ends.get();
 
+  cout << "compute04" << endl;
 
   rMatrix = _pool.value<vector<TNT::Array2D<Real> > >("r")[0];
   frequencies = _pool.value<vector<Real> >("frequencies");
@@ -464,6 +471,7 @@ void HumDetector::compute() {
   starts = _pool.value<vector<Real> >("starts");
   ends = _pool.value<vector<Real> >("ends");
 
+  cout << "compute05" << endl;
 
   reset();
 }
