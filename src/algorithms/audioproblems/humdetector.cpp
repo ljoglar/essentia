@@ -312,6 +312,8 @@ AlgorithmStatus HumDetector::process() {
   Real threshold;
 
   cout << "continue 08" << endl;
+  cout << _iterations << endl;
+  cout << _spectSize << endl;
   // finally the r matrix is feed into the pitch contours recommended signal chain
   for (uint j = 0; j < _iterations; j++) {
     for (uint i = 0; i < _spectSize; i++)
