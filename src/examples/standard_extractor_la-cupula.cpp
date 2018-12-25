@@ -242,8 +242,10 @@ int essentia_main(string audioFilename, string outputFilename) {
     pool.set("EBUR128.integratedLoudness", integratedLoudness);
     pool.set("EBUR128.range", loudnessRange);
 
+    cout << "-------- start false Stereo ---------" << endl;
     falseStereoDetector->compute();
     pool.set("channelsCorrelation", correlation);
+    cout << "-------- end false Stereo ---------" << endl;
 
     monoMixer->compute();
 
@@ -272,6 +274,9 @@ int essentia_main(string audioFilename, string outputFilename) {
     } else {
       pool.set("truePeakDetector.present", false);
     }
+
+
+    cout << "-------- into while ---------" << endl;
 
     vector<Real> noiseBursts;
 
@@ -313,6 +318,9 @@ int essentia_main(string audioFilename, string outputFilename) {
 
       idx++;
     }
+
+    cout << "-------- out of while ---------" << endl;
+    
 
     if (noiseBursts.size() > 0) {
       pool.set("noiseBursts.present", true);
