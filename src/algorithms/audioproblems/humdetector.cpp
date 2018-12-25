@@ -346,11 +346,13 @@ AlgorithmStatus HumDetector::process() {
     if (not salienceBins.empty())
       peakBinsNotEmpty = true;
   }
+  cout << "continue 09" << endl;
     std::vector<std::vector<Real> > contoursBins;
     std::vector<std::vector<Real> > contoursSaliences;
     std::vector<Real> contoursStartTimes, contoursEndsTimes, contoursFreqsMean, contoursSaliencesMean;
     Real duration;
 
+  cout << "continue 10" << endl;
     if (peakBinsNotEmpty) {
       _pitchContours->input("peakBins").set(peakBins);
       _pitchContours->input("peakSaliences").set(peakSaliences);
@@ -364,7 +366,7 @@ AlgorithmStatus HumDetector::process() {
       contoursSaliencesMean.assign(contoursBins.size(), 0.f);
       contoursEndsTimes.assign(contoursBins.size(), 0.f);
 
-  cout << "continue 09" << endl;
+  cout << "continue 11" << endl;
       Real timeWindowSecs = _timeWindow * _hopSize / _outSampleRate;
       for (uint i = 0; i < contoursBins.size(); i++) {
         // we add the offset due to the initial frames needed to fill the buffers
