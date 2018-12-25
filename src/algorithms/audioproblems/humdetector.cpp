@@ -182,12 +182,14 @@ void HumDetector::configure() {
 
 
 AlgorithmStatus HumDetector::process() {
-//  cout << "Should Stop: " << shouldStop() << endl;
+  cout << "Should Stop: " << shouldStop() << endl;
 
   if (!shouldStop()) {
     E_WARNING("HumDetector: shouldStop");
     return PASS;
   }
+
+  cout << "continue " << shouldStop() << endl;
 
   if (!_pool.contains<vector<vector<Real> > >("psd")) {
     // do not push anything in the case of empty signal
