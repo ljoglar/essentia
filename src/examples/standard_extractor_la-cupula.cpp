@@ -245,7 +245,7 @@ int essentia_main(string audioFilename, string outputFilename) {
     cout << "-------- start false Stereo ---------" << endl;
     falseStereoDetector->compute();
     pool.set("channelsCorrelation", correlation);
-    cout << "-------- end false Stereo ---------" << endl;
+
     cout << "-------- start monoMixer ---------" << endl;
 
     monoMixer->compute();
